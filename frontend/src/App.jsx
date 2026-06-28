@@ -4,7 +4,7 @@ import { Container, Typography, TextField, Button, Card, CardContent, CircularPr
 function App() {
   const [amount, setAmount] = useState(1000);
   const [targetCurrency, setTargetCurrency] = useState("INR"); 
-  const [transferSpeed, setTransferSpeed] = useState("STANDARD"); // New speed state!
+  const [transferSpeed, setTransferSpeed] = useState("STANDARD");
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -19,7 +19,7 @@ function App() {
           amount: Number(amount),
           fromCurrency: "AED",
           toCurrency: targetCurrency,
-          method: transferSpeed // Pass chosen speed to Java!
+          method: transferSpeed 
         }),
       });
 
@@ -68,7 +68,7 @@ function App() {
         </Select>
       </FormControl>
 
-      {/* --- NEW DELIVERY SPEED TOGGLE --- */}
+    
       <Typography variant="subtitle2" style={{ marginTop: '15px', marginBottom: '5px', fontWeight: 'bold' }}>
         Transfer Speed
       </Typography>
