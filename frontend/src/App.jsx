@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Container, Typography, TextField, Button, Card, CardContent, CircularProgress, MenuItem, Select, FormControl, InputLabel, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 function App() {
   const [amount, setAmount] = useState(1000);
@@ -10,21 +11,19 @@ function App() {
 
   const handleCompare = async () => {
     setLoading(true);
-    
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/quote', {
+      const response = await fetch('http://127.0.0.1:8000/api/quote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: Number(amount),
           fromCurrency: "AED",
           toCurrency: targetCurrency,
-          method: transferSpeed 
+          method: transferSpeed
         }),
       });
 
       if (!response.ok) throw new Error("Server threw an error!");
-
       const data = await response.json();
       setResults(data);
       
@@ -37,14 +36,10 @@ function App() {
   };
 
   return (
-    <Container maxWidth="sm" style={{ marginTop: '40px', fontFamily: 'sans-serif' }}>
+    <Container maxWidth="sm" style={{ marginTop: '40px', fontFamily: 'sans-serif', paddingBottom: '50px' }}>
       
-      <Typography variant="h4" fontWeight="bold" gutterBottom>
-        Send Money Home
-      </Typography>
-      <Typography variant="body1" color="textSecondary" gutterBottom>
-        Compare live multi-currency rates & delivery speeds
-      </Typography>
+      <Typography variant="h4" fontWeight="bold" gutterBottom>Send Money Home</Typography>
+      <Typography variant="body1" color="textSecondary" gutterBottom>Compare live multi-currency rates & delivery speeds</Typography>
 
       <TextField 
         label="Amount in AED" 
@@ -57,21 +52,14 @@ function App() {
 
       <FormControl fullWidth margin="normal">
         <InputLabel>Destination Currency</InputLabel>
-        <Select
-          value={targetCurrency}
-          label="Destination Currency"
-          onChange={(e) => setTargetCurrency(e.target.value)}
-        >
+        <Select value={targetCurrency} label="Destination Currency" onChange={(e) => setTargetCurrency(e.target.value)}>
           <MenuItem value="INR">India (INR)</MenuItem>
           <MenuItem value="PKR">Pakistan (PKR)</MenuItem>
           <MenuItem value="PHP">Philippines (PHP)</MenuItem>
         </Select>
       </FormControl>
 
-    
-      <Typography variant="subtitle2" style={{ marginTop: '15px', marginBottom: '5px', fontWeight: 'bold' }}>
-        Transfer Speed
-      </Typography>
+      <Typography variant="subtitle2" style={{ marginTop: '15px', marginBottom: '5px', fontWeight: 'bold' }}>Transfer Speed</Typography>
       <ToggleButtonGroup
         value={transferSpeed}
         exclusive
@@ -120,6 +108,30 @@ function App() {
               </CardContent>
             </Card>
           ))}
+
+          {results.trend && (
+            <Card style={{ marginTop: '20px', border: '1px solid #e0e0e0', boxShadow: 'none' }}>
+              <CardContent>
+                <Typography variant="h6" fontWeight="bold" gutterBottom>
+                  7-Day Market Trend ({results.currency})
+                </Typography>
+                <div style={{ width: '100%', height: 250, marginTop: '15px' }}>
+                  <ResponsiveContainer>
+                    <LineChart data={results.trend} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                      <Line type="monotone" dataKey="rate" stroke="#1976d2" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 8 }} />
+                      <CartesianGrid stroke="#ccc" strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="date" fontSize={12} tickLine={false} axisLine={false} />
+                      <YAxis domain={['auto', 'auto']} fontSize={12} tickLine={false} axisLine={false} width={50} />
+                      <Tooltip 
+                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
         </div>
       )}
 

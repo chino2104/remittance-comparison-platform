@@ -2,10 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import requests
+import random
+from datetime import datetime, timedelta
 
 app = FastAPI()
 
-# security bypass to allow React to talk to Python
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,7 +15,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# define the incoming data bucket from react
 class QuoteRequest(BaseModel):
     amount: float
     fromCurrency: str
@@ -22,12 +22,11 @@ class QuoteRequest(BaseModel):
     method: str
 
 @app.post("/api/quote")
-def get_quote(request: QuoteRequest): #gets the value of the variables from the request
+def get_quote(request: QuoteRequest):
     amount = request.amount
     target_currency = request.toCurrency
     transfer_speed = request.method
     
-    #call the api that refreshes live
     url = "https://open.er-api.com/v6/latest/AED"
     api_response = requests.get(url).json()
     rates = api_response.get("rates", {})
@@ -46,7 +45,6 @@ def get_quote(request: QuoteRequest): #gets the value of the variables from the 
     al_ansari_fee = 15.0
     al_ansari_hours = 48
     
-    # speed modifiers based on speed selected
     if transfer_speed.upper() == "EXPRESS":
         wise_fee += 12.0
         wise_hours = 1
@@ -56,10 +54,22 @@ def get_quote(request: QuoteRequest): #gets the value of the variables from the 
     mid_market_receive = amount * live_mid_market_rate
     wise_receive = (amount - wise_fee) * wise_rate
     al_ansari_receive = (amount - al_ansari_fee) * al_ansari_rate
-    
     max_savings = wise_receive - al_ansari_receive
+
+    # NEW: Generate 7-day simulated trend data based on today's live rate
+    trend_data = []
+    for i in range(6, -1, -1):
+        date_str = (datetime.now() - timedelta(days=i)).strftime("%b %d")
+        # Fluctuate the rate randomly by up to +/- 0.5%
+        fluctuation = live_mid_market_rate * random.uniform(-0.005, 0.005)
+        trend_data.append({
+            "date": date_str,
+            "rate": round(live_mid_market_rate + fluctuation, 4)
+        })
+    # Overwrite the final day so "Today" perfectly matches the exact live rate
+    trend_data[-1]["rate"] = round(live_mid_market_rate, 4)
+    trend_data[-1]["date"] = "Today"
     
-    # pack and return the final JSON (FastAPI translates this dictionary automatically)
     return {
         "midMarketRate": round(live_mid_market_rate, 2),
         "midMarketReceiveAmount": round(mid_market_receive),
@@ -81,5 +91,6 @@ def get_quote(request: QuoteRequest): #gets the value of the variables from the 
                 "receiveAmount": round(al_ansari_receive),
                 "deliveryHours": al_ansari_hours
             }
-        ]
+        ],
+        "trend": trend_data # Send the graph data to React
     }
