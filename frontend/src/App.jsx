@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import {
   Container, Typography, TextField, Button, Card, CardContent,
   CircularProgress, MenuItem, Select, FormControl, Box, Chip,
-  AppBar, Toolbar, ToggleButton, ToggleButtonGroup, IconButton,
+  AppBar, Toolbar, IconButton,
   ThemeProvider, createTheme, CssBaseline
 } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -15,6 +15,17 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 // Replace {token} placeholders in a translation string, e.g. fmt("in {h}h", {h: 24}).
 const fmt = (str, vars = {}) =>
   str.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : `{${k}}`));
+
+// Format an ISO date (YYYY-MM-DD) for display in the active language.
+const fmtDate = (iso, lang) => {
+  try {
+    return new Date(`${iso}T00:00:00`).toLocaleDateString(lang, {
+      year: 'numeric', month: 'short', day: 'numeric',
+    });
+  } catch {
+    return iso;
+  }
+};
 
 // Colour tokens for each mode. Every custom colour used in the UI lives here so the
 // whole app re-themes by flipping `mode`.
@@ -71,7 +82,6 @@ const getColors = (mode) => {
 function App() {
   const [amount, setAmount] = useState(1000);
   const [targetCurrency, setTargetCurrency] = useState("EUR");
-  const [transferSpeed, setTransferSpeed] = useState("STANDARD");
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -128,7 +138,6 @@ function App() {
           amount: Number(amount),
           fromCurrency: "AED",
           toCurrency: targetCurrency,
-          method: transferSpeed
         }),
       });
 
@@ -295,21 +304,6 @@ function App() {
                     </FormControl>
                   </Box>
 
-                  <Typography variant="caption" sx={{ color: c.textSecondary, fontWeight: 600, textTransform: 'uppercase', mb: 1, display: 'block' }}>{t.transferSpeed}</Typography>
-                  <ToggleButtonGroup
-                    value={transferSpeed}
-                    exclusive
-                    fullWidth
-                    onChange={(e, newSpeed) => { if (newSpeed) setTransferSpeed(newSpeed); }}
-                    sx={{
-                      mb: 4,
-                      '& .MuiToggleButton-root': { borderRadius: '12px', textTransform: 'none', fontWeight: 600, border: `1px solid ${c.innerBorder}`, py: 1.5, color: c.textSecondary },
-                      '& .Mui-selected': { backgroundColor: `${c.accentBg} !important`, color: `${c.accent} !important`, border: `1px solid ${c.accent} !important` }
-                    }}
-                  >
-                    <ToggleButton value="STANDARD">{t.standard}</ToggleButton>
-                    <ToggleButton value="EXPRESS">{t.express}</ToggleButton>
-                  </ToggleButtonGroup>
 
                   <Button
                     variant="contained"
@@ -458,7 +452,6 @@ function App() {
                               >
                                 {quote.provider}
                               </Typography>
-                              <Chip label={fmt(t.inHours, { h: quote.deliveryHours })} size="small" sx={{ mt: 0.5, backgroundColor: c.chipBg, color: c.chipText, fontWeight: 600, height: '20px', fontSize: '0.7rem' }} />
                             </Box>
 
                             {/* Right: Rate and Fee */}
@@ -468,7 +461,7 @@ function App() {
                                 <Typography variant="body2" sx={{ fontWeight: 700, color: c.textPrimary }}>{quote.rate}</Typography>
                               </Box>
                               <Typography variant="caption" sx={{ color: c.textSecondary, display: 'block' }}>
-                                {t.fee}: {quote.fee} {results.sendCurrency || 'AED'}
+                                {t.fee}: {quote.feeKnown ? `${quote.fee} ${results.sendCurrency || 'AED'}` : t.checkProvider}
                               </Typography>
                             </Box>
                           </Box>
@@ -486,6 +479,15 @@ function App() {
                                 {results.currency}
                               </Typography>
                             </Box>
+
+                            {/* Honesty label: these are estimates, with the date the
+                                provider's markup/fee was last checked. */}
+                            {quote.estimated && (
+                              <Typography variant="caption" sx={{ display: 'block', mt: 1, color: c.textMuted, fontSize: '0.68rem' }}>
+                                ⚠ {t.estimatedShort}
+                                {quote.lastVerified ? ` · ${fmt(t.verified, { date: fmtDate(quote.lastVerified, lang) })}` : ''}
+                              </Typography>
+                            )}
                           </Box>
 
                         </CardContent>
