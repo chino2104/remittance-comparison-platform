@@ -17,6 +17,9 @@ dist-ssr/
 .env.*
 !.env.example
 
+# --- Personal project docs (kept local, not on GitHub) ---
+docs/methodology-framework.md
+
 # --- Editor / OS ---
 .vscode/*
 !.vscode/extensions.json
