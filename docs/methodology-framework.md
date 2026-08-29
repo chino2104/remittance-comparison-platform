@@ -7,8 +7,12 @@
 > your own words are yours to write** — that's what the paper is marked on. Look for the
 > ➤ prompts: they mark where *you* need to add your reasoning.
 
-> **Before you start:** get your exam board's marking criteria (EPQ / CS NEA / IB, etc.) and
-> map the sections below onto its required structure. The mark scheme is the real spec.
+> **This project is for a CREST Gold Award.** You are assessed by a CREST assessor against
+> **15 criteria (you must meet at least 11)**, and you submit **two things**: your **project
+> report** (which this framework scaffolds) **and** the **CREST Gold Student Profile form** (a
+> checklist where you show the assessor how you met each criterion — download it from
+> crestawards.org). See **Part A2** below for the criteria mapping. CREST rewards **process and
+> working "like a professional"** — so your research dead-ends and pivots are *assets here*.
 
 ---
 
@@ -57,6 +61,59 @@ That is textbook methodology. Build the paper around it.
 8. Evaluation & Limitations — what works, what's estimated, future work
 9. Conclusion & Reflection
 10. References
+
+---
+
+## PART A2 — Tailoring to the CREST Gold Award
+
+**Two deliverables:** (1) your **project report** (scaffolded by Parts A & B), and (2) the
+**CREST Gold Student Profile form** — a checklist where *you* point the assessor to where in
+your report you met each criterion. Meet **≥ 11 of 15**. Gold ≈ 70 hours, student-led, marked
+by a CREST assessor. Everything must be **safe, ethical, authentic**.
+
+### How this project maps to the 15 criteria
+
+| # | Criterion | Where your project delivers it / ➤ what you must add |
+|---|---|---|
+| 1.1 | Clear aim & measurable objectives | Aim: help UAE workers compare remittance rates. ➤ Write **specific, measurable** objectives + success metrics. |
+| 1.2 | Wider purpose & implications | ➤ Develop the societal context — remittance costs fall on low-income migrant workers; small savings matter at scale. |
+| 1.3 | Range of approaches, **evaluated before choosing** | ★ **STRONG.** You evaluated several data-sourcing approaches (Wise API, scraping, aggregators, live FX + markups) *with evidence* before selecting one. Make this a headline. |
+| 1.4 | Project plan & rationale for decisions | ➤ Set out key activities/milestones and justify decisions (much is in Part B). |
+| 1.5 | Time management (timeline/Gantt) | ⚠️ **GAP.** ➤ Produce a Gantt/timeline of your ~70 hours (tasks, durations, dependencies). See the gap note below. |
+| 2.1 | Resource use & people | ➤ List tools/APIs/docs used. ⚠️ Engaging a STEM mentor/professional is strongly recommended — see gap note. |
+| 2.2 | Research & **primary** sources, consistent referencing | ★ **STRONG.** Your live API tests are *primary data*. ➤ Add a consistent referencing style (e.g. Harvard). |
+| 3.1 | Conclusions & real-world implications | ➤ Draw conclusions that address the aim + spell out direct/indirect implications for users. |
+| 3.2 | Reflection on how decisions affected the project | ★ **STRONG.** The pivots (fake-rate fix, PKR flat-line, honest model) show root-cause understanding. |
+| 3.3 | Learning, skills, improvement | ➤ What you learned + skills gained + how you'd improve it with more time/resources. |
+| 4.1 | Technical understanding (Level 3) | Full-stack app + live APIs + data modelling — appropriate complexity. |
+| 4.2 | Ethics & safety | ★ **STRONG.** Honesty / no-misrepresentation, and rejecting scraping on ToS grounds. ➤ Add a short ethics + risk note. |
+| 4.3 | Creative thinking (novel approach) | ★ **STRONG.** Combining live FX + sourced markups into an honest estimate model is a novel solution to a real constraint. |
+| 4.4 | Strategic problem-solving from root cause | ★ **STRONG.** Root cause (no AED-out data) → innovative, research-founded solution. |
+| 4.5 | Clear communication to a non-specialist | ➤ Write accessibly; explain terms (mid-market, markup, corridor); proofread for spelling/grammar. |
+
+You are already strong on **1.3, 2.2, 3.2, 4.2, 4.3, 4.4** — six of the eleven you need. The
+rest are mostly *writing* tasks, plus the two gaps below.
+
+### The two gaps to close now (before you forget the detail)
+1. **Time-management artefact (1.5).** Make a Gantt chart / timeline of your project hours. Your
+   **Git commit history is real, dated evidence** of your timeline — export it and turn it into
+   a timeline:
+   ```bash
+   git log --pretty=format:'%ad  %s' --date=short
+   ```
+2. **Professional engagement (2.1 / "working like a professional").** CREST Gold strongly
+   recommends input from a STEM professional or mentor. ➤ Even now you can: interview a software
+   developer, speak to someone who regularly sends remittances (a real target user!), or ask a
+   CS teacher to act as mentor and give **documented** feedback. A short quote or feedback note
+   materially strengthens the award.
+
+### Reframe your emphasis for CREST (vs a normal exam-board writeup)
+- **Process > product.** Document the journey *including what failed* — CREST explicitly values
+  this. Your Wise-API dead-end is a highlight, not something to hide.
+- **Show you worked like a professional:** version control (Git/GitHub), testing, reading API
+  documentation, iterating on evidence.
+- **Real-world implications:** who benefits, by how much, and what the limitations mean for
+  actual users.
 
 ---
 
