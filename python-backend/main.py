@@ -6,14 +6,12 @@ from datetime import datetime, timedelta
 
 app = FastAPI(title="GlobalRemit API")
 
-# NOTE: no cookies/auth are used, so we do NOT enable credentials. Combining
-# allow_credentials=True with allow_origins=["*"] is rejected by browsers anyway.
+# Public, read-only API with no cookies/auth, so allowing all origins is safe
+# (allow_credentials stays False). This lets the deployed frontend call the API
+# from its production domain without hard-coding it here.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=["*"],
     allow_credentials=False,
     allow_methods=["POST", "GET", "OPTIONS"],
     allow_headers=["*"],
