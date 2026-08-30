@@ -16,7 +16,8 @@ dist-ssr/
 .env
 .env.*
 !.env.example
-!.env.production   # public backend URL for the prod build — safe to commit
+# public backend URL for the prod build — safe to commit
+!.env.production
 
 # --- Personal project docs (kept local, not on GitHub) ---
 docs/methodology-framework.md
