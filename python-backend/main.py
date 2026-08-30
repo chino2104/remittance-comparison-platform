@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import requests
 from datetime import datetime, timedelta
 
-app = FastAPI(title="GlobalRemit API")
+app = FastAPI(title="RemitDubai API")
 
 # Public, read-only API with no cookies/auth, so allowing all origins is safe
 # (allow_credentials stays False). This lets the deployed frontend call the API

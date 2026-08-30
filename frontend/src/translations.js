@@ -1,4 +1,4 @@
-// Multi-language dictionary for GlobalRemit.
+// Multi-language dictionary for RemitDubai.
 // Each language provides the same set of keys. `dir` marks right-to-left languages
 // (Urdu, Arabic) so the app can flip layout direction.
 //
@@ -16,7 +16,7 @@ export const LANGUAGES = [
 export const translations = {
   en: {
     dir: "ltr",
-    appName: "GlobalRemit",
+    appName: "RemitDubai",
     liveRates: "Estimated Rates",
     heroTitle: "Send money the smart way",
     heroSubtitle: "Compare estimated provider rates and avoid hidden fees.",
@@ -27,9 +27,9 @@ export const translations = {
     standard: "Standard",
     express: "⚡ Express",
     compareRates: "Compare Rates",
-    aboutTitle: "What really is GlobalRemit?",
+    aboutTitle: "What really is RemitDubai?",
     aboutBody:
-      "Hello, my name is Armaan Sehgal, studying A-Levels at NAS Dubai, and I am the developer of GlobalRemit, a site intended to help labourers in Dubai find the perfect exchange rate website with the lowest fees and highlighting the differences with their contenders to ensure they can send money back to their family and loved ones in their home country!",
+      "Hello, my name is Armaan Sehgal, studying A-Levels at NAS Dubai, and I am the developer of RemitDubai, a site intended to help labourers in Dubai find the perfect exchange rate website with the lowest fees and highlighting the differences with their contenders to ensure they can send money back to their family and loved ones in their home country!",
     emptyState: "Enter an amount to see live market data.",
     bestOverall: "Best Overall",
     useProvider: "Use {provider}",
@@ -58,7 +58,7 @@ export const translations = {
 
   hi: {
     dir: "ltr",
-    appName: "GlobalRemit",
+    appName: "RemitDubai",
     liveRates: "अनुमानित दरें",
     heroTitle: "समझदारी से पैसा भेजें",
     heroSubtitle: "अनुमानित प्रदाता दरों की तुलना करें और छिपे शुल्क से बचें।",
@@ -69,9 +69,9 @@ export const translations = {
     standard: "सामान्य",
     express: "⚡ एक्सप्रेस",
     compareRates: "दरों की तुलना करें",
-    aboutTitle: "GlobalRemit असल में क्या है?",
+    aboutTitle: "RemitDubai असल में क्या है?",
     aboutBody:
-      "नमस्ते, मेरा नाम अरमान सहगल है, मैं NAS दुबई में A-Levels की पढ़ाई कर रहा हूँ, और मैं GlobalRemit का डेवलपर हूँ — एक ऐसी साइट जो दुबई के मज़दूरों को सबसे कम शुल्क वाली सही एक्सचेंज रेट वेबसाइट खोजने में मदद करती है, ताकि वे अपने परिवार और प्रियजनों को अपने देश पैसे भेज सकें!",
+      "नमस्ते, मेरा नाम अरमान सहगल है, मैं NAS दुबई में A-Levels की पढ़ाई कर रहा हूँ, और मैं RemitDubai का डेवलपर हूँ — एक ऐसी साइट जो दुबई के मज़दूरों को सबसे कम शुल्क वाली सही एक्सचेंज रेट वेबसाइट खोजने में मदद करती है, ताकि वे अपने परिवार और प्रियजनों को अपने देश पैसे भेज सकें!",
     emptyState: "लाइव बाज़ार डेटा देखने के लिए राशि दर्ज करें।",
     bestOverall: "सर्वश्रेष्ठ",
     useProvider: "{provider} का उपयोग करें",
@@ -100,7 +100,7 @@ export const translations = {
 
   ur: {
     dir: "rtl",
-    appName: "GlobalRemit",
+    appName: "RemitDubai",
     liveRates: "تخمینی ریٹس",
     heroTitle: "سمجھداری سے پیسے بھیجیں",
     heroSubtitle: "تخمینی فراہم کنندہ ریٹس کا موازنہ کریں اور چھپی فیسوں سے بچیں۔",
@@ -111,9 +111,9 @@ export const translations = {
     standard: "عام",
     express: "⚡ ایکسپریس",
     compareRates: "ریٹس کا موازنہ کریں",
-    aboutTitle: "GlobalRemit اصل میں کیا ہے؟",
+    aboutTitle: "RemitDubai اصل میں کیا ہے؟",
     aboutBody:
-      "السلام علیکم، میرا نام ارمان سہگل ہے، میں NAS دبئی میں A-Levels کی تعلیم حاصل کر رہا ہوں، اور میں GlobalRemit کا ڈویلپر ہوں — ایک ایسی ویب سائٹ جو دبئی کے مزدوروں کو سب سے کم فیس والی بہترین ایکسچینج ریٹ ویب سائٹ تلاش کرنے میں مدد دیتی ہے تاکہ وہ اپنے خاندان اور پیاروں کو اپنے وطن پیسے بھیج سکیں!",
+      "السلام علیکم، میرا نام ارمان سہگل ہے، میں NAS دبئی میں A-Levels کی تعلیم حاصل کر رہا ہوں، اور میں RemitDubai کا ڈویلپر ہوں — ایک ایسی ویب سائٹ جو دبئی کے مزدوروں کو سب سے کم فیس والی بہترین ایکسچینج ریٹ ویب سائٹ تلاش کرنے میں مدد دیتی ہے تاکہ وہ اپنے خاندان اور پیاروں کو اپنے وطن پیسے بھیج سکیں!",
     emptyState: "لائیو مارکیٹ ڈیٹا دیکھنے کے لیے رقم درج کریں۔",
     bestOverall: "سب سے بہترین",
     useProvider: "{provider} استعمال کریں",
@@ -142,7 +142,7 @@ export const translations = {
 
   ar: {
     dir: "rtl",
-    appName: "GlobalRemit",
+    appName: "RemitDubai",
     liveRates: "أسعار تقديرية",
     heroTitle: "أرسل الأموال بطريقة ذكية",
     heroSubtitle: "قارن أسعار المزوّدين التقديرية وتجنّب الرسوم الخفية.",
@@ -153,9 +153,9 @@ export const translations = {
     standard: "عادي",
     express: "⚡ سريع",
     compareRates: "قارن الأسعار",
-    aboutTitle: "ما هو GlobalRemit حقًا؟",
+    aboutTitle: "ما هو RemitDubai حقًا؟",
     aboutBody:
-      "مرحبًا، اسمي أرمان سيهغال، أدرس A-Levels في مدرسة NAS دبي، وأنا مطوّر GlobalRemit — وهو موقع يهدف إلى مساعدة العمال في دبي على إيجاد أفضل موقع لأسعار الصرف بأقل الرسوم، لضمان تمكّنهم من إرسال الأموال إلى عائلاتهم وأحبائهم في أوطانهم!",
+      "مرحبًا، اسمي أرمان سيهغال، أدرس A-Levels في مدرسة NAS دبي، وأنا مطوّر RemitDubai — وهو موقع يهدف إلى مساعدة العمال في دبي على إيجاد أفضل موقع لأسعار الصرف بأقل الرسوم، لضمان تمكّنهم من إرسال الأموال إلى عائلاتهم وأحبائهم في أوطانهم!",
     emptyState: "أدخل مبلغًا لعرض بيانات السوق المباشرة.",
     bestOverall: "الأفضل إجمالاً",
     useProvider: "استخدم {provider}",
@@ -184,7 +184,7 @@ export const translations = {
 
   tl: {
     dir: "ltr",
-    appName: "GlobalRemit",
+    appName: "RemitDubai",
     liveRates: "Tinatayang Presyo",
     heroTitle: "Magpadala ng pera nang matalino",
     heroSubtitle:
@@ -196,9 +196,9 @@ export const translations = {
     standard: "Standard",
     express: "⚡ Express",
     compareRates: "Ihambing ang Presyo",
-    aboutTitle: "Ano nga ba ang GlobalRemit?",
+    aboutTitle: "Ano nga ba ang RemitDubai?",
     aboutBody:
-      "Kumusta, ako si Armaan Sehgal, nag-aaral ng A-Levels sa NAS Dubai, at ako ang developer ng GlobalRemit — isang site na tumutulong sa mga manggagawa sa Dubai na mahanap ang pinakamahusay na exchange rate website na may pinakamababang bayarin, upang matiyak na makapagpapadala sila ng pera sa kanilang pamilya at mga mahal sa buhay sa kanilang bansa!",
+      "Kumusta, ako si Armaan Sehgal, nag-aaral ng A-Levels sa NAS Dubai, at ako ang developer ng RemitDubai — isang site na tumutulong sa mga manggagawa sa Dubai na mahanap ang pinakamahusay na exchange rate website na may pinakamababang bayarin, upang matiyak na makapagpapadala sila ng pera sa kanilang pamilya at mga mahal sa buhay sa kanilang bansa!",
     emptyState: "Maglagay ng halaga para makita ang live na datos ng market.",
     bestOverall: "Pinakamahusay",
     useProvider: "Gamitin ang {provider}",
