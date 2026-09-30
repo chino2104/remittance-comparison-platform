@@ -45,20 +45,24 @@ FALLBACK_USD_RATES = {
 # corridor. So the app compares on EXCHANGE RATE and tells users to confirm the
 # fee with the provider. Every card is labelled "Estimated".
 #
-# Markup sources (Jul 2026):
-#   - Al Ansari, LuLu (UAE exchange houses): remit.ae per-provider pages.
-#   - Wise, Remitly, WorldRemit, Instarem (digital): Wise Comparison API, real
-#     advertised rates on USD->INR (markup% is roughly corridor-stable).
-# Wall Street Exchange closed and was removed; Federal Exchange had no public
-# rate source and was replaced by WorldRemit + Instarem. Re-check occasionally
-# and bump `lastVerified`.
+# All six providers below were confirmed to offer AED-out (sending money FROM
+# the UAE) as of Sep 2026. WorldRemit and Instarem were removed after they
+# stopped offering AED-out transfers. `markup` = the provider's typical rate
+# relative to mid-market:
+#   - Wise, Remitly (digital apps): support AED send; near-mid rates.
+#   - Al Ansari, GCC Exchange, Al Fardan, LuLu (CBUAE-licensed UAE exchange
+#     houses): their margin is bundled into the rate. Markups are estimates in
+#     the observed UAE exchange-house band (~0.4-0.8% below mid; houses cluster
+#     within ~1% of each other, per remit.ae). GCC's rate was cross-checked
+#     against remit.ae (near-mid).
+# Re-check occasionally and bump `lastVerified`.
 PROVIDERS = [
-    {"provider": "Wise",          "markup": 0.996, "url": "https://wise.com",             "lastVerified": "2026-07-29"},
-    {"provider": "Remitly",       "markup": 0.994, "url": "https://www.remitly.com",      "lastVerified": "2026-07-29"},
-    {"provider": "WorldRemit",    "markup": 0.996, "url": "https://www.worldremit.com",   "lastVerified": "2026-07-29"},
-    {"provider": "Instarem",      "markup": 0.991, "url": "https://www.instarem.com",     "lastVerified": "2026-07-29"},
-    {"provider": "Al Ansari",     "markup": 0.995, "url": "https://alansariexchange.com", "lastVerified": "2026-07-29"},
-    {"provider": "LuLu Exchange", "markup": 0.992, "url": "https://www.luluexchange.com", "lastVerified": "2026-07-29"},
+    {"provider": "Wise",              "markup": 0.996, "url": "https://wise.com",                "lastVerified": "2026-09-30"},
+    {"provider": "GCC Exchange",      "markup": 0.996, "url": "https://www.gccexchange.com",     "lastVerified": "2026-09-30"},
+    {"provider": "Al Ansari",         "markup": 0.995, "url": "https://alansariexchange.com",    "lastVerified": "2026-09-30"},
+    {"provider": "Remitly",           "markup": 0.994, "url": "https://www.remitly.com",         "lastVerified": "2026-09-30"},
+    {"provider": "Al Fardan Exchange","markup": 0.993, "url": "https://www.alfardanexchange.com","lastVerified": "2026-09-30"},
+    {"provider": "LuLu Exchange",     "markup": 0.992, "url": "https://www.luluexchange.com",    "lastVerified": "2026-09-30"},
 ]
 
 
