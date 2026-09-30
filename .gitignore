@@ -22,6 +22,7 @@ dist-ssr/
 # --- Personal project docs (kept local, not on GitHub) ---
 docs/methodology-framework.md
 docs/methodology-paper.md
+docs/project-state.md
 
 # --- Editor / OS ---
 .vscode/*
