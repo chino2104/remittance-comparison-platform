@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import {
   Container, Typography, TextField, Button, Card, CardContent,
   CircularProgress, MenuItem, Select, FormControl, Box, Chip,
-  AppBar, Toolbar, IconButton,
+  AppBar, Toolbar, IconButton, Alert,
   ThemeProvider, createTheme, CssBaseline
 } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -397,6 +397,9 @@ function App() {
 
                   <Typography variant="h6" sx={{ fontWeight: 700, color: c.textPrimary, mb: 0.5 }}>{t.providerQuotes}</Typography>
                   <Typography variant="caption" sx={{ color: c.textMuted, display: 'block', mb: 2 }}>{t.estimatedNote}</Typography>
+                  {results.rateLive === false && (
+                    <Alert severity="warning" sx={{ mb: 2 }}>{t.rateNotLive}</Alert>
+                  )}
 
                   {/* --- HARD-LOCKED 3x2 CSS GRID --- */}
                   <Box sx={{

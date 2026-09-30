@@ -20,16 +20,25 @@ app.add_middleware(
 # --- Static reference data -------------------------------------------------
 
 # Approximate USD -> currency rates, used only when BOTH live FX sources are
-# unreachable so the app still returns a sensible answer offline.
+# unreachable AND no live rate has been cached since the server started.
+# Refreshed from open.er-api on 2026-09-30 — re-check occasionally.
 FALLBACK_USD_RATES = {
     "USD": 1.0,
     "AED": 3.6725,
-    "EUR": 0.92,
-    "INR": 83.5,
-    "PKR": 278.0,
-    "PHP": 58.5,
-    "GBP": 0.79,
+    "EUR": 0.8815,
+    "INR": 96.06,
+    "PKR": 276.88,
+    "PHP": 62.60,
+    "GBP": 0.756,
 }
+
+# Only these currencies have a rate source (live or fallback). Anything else is
+# rejected with HTTP 422 rather than silently priced at a meaningless rate.
+SUPPORTED_CURRENCIES = set(FALLBACK_USD_RATES)
+
+# Last successful live rate per corridor, so an outage falls back to a recent
+# real rate before resorting to the hard-coded table above.
+_last_live_rates: dict[tuple[str, str], float] = {}
 
 # --- Provider model (rate-only comparison) ---------------------------------
 #
@@ -73,8 +82,11 @@ class QuoteRequest(BaseModel):
 
     @field_validator("fromCurrency", "toCurrency")
     @classmethod
-    def uppercase_currency(cls, v: str) -> str:
-        return v.upper()
+    def supported_currency(cls, v: str) -> str:
+        v = v.upper()
+        if v not in SUPPORTED_CURRENCIES:
+            raise ValueError(f"Unsupported currency: {v}")
+        return v
 
 
 def _fallback_rate(from_ccy: str, to_ccy: str) -> float:
@@ -96,6 +108,7 @@ def get_live_rate(from_ccy: str, to_ccy: str):
         if data.get("result") == "success":
             rate = data.get("rates", {}).get(to_ccy)
             if rate:
+                _last_live_rates[(from_ccy, to_ccy)] = float(rate)
                 return float(rate), True
     except (requests.RequestException, ValueError) as exc:
         print(f"[quote] live FX (open.er-api) unavailable: {exc}")
@@ -149,9 +162,14 @@ def get_quote(req: QuoteRequest):
     trend, target_is_live, frankfurter_latest = get_trend(req.fromCurrency, req.toCurrency)
 
     # 2) Live current mid-market rate (open.er-api — covers AED & PKR). Falls
-    #    back to the Frankfurter latest, then to the offline table.
+    #    back to the Frankfurter latest (only if ECB actually publishes the
+    #    target — otherwise that "latest" is built from the offline table), then
+    #    the last cached live rate, then the offline table.
     live_rate, rate_is_live = get_live_rate(req.fromCurrency, req.toCurrency)
-    base_rate = live_rate or frankfurter_latest or _fallback_rate(req.fromCurrency, req.toCurrency)
+    ecb_latest = frankfurter_latest if target_is_live else None
+    base_rate = (live_rate or ecb_latest
+                 or _last_live_rates.get((req.fromCurrency, req.toCurrency))
+                 or _fallback_rate(req.fromCurrency, req.toCurrency))
 
     # 3) Build each provider quote from the live rate x its markup. Fees are not
     #    modelled — we compare on exchange rate and tell users to confirm the fee
