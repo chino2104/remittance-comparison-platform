@@ -40,38 +40,35 @@ SUPPORTED_CURRENCIES = set(FALLBACK_USD_RATES)
 # real rate before resorting to the hard-coded table above.
 _last_live_rates: dict[tuple[str, str], float] = {}
 
-# --- Provider model (rate-only comparison) ---------------------------------
+# --- Provider model ---------------------------------------------------------
 #
-# Each provider's shown rate = LIVE mid-market rate x markup.
-# The live mid-market rate updates automatically every day (free, no key, from
-# open.er-api.com), so the displayed provider rates update daily on their own.
-# `markup` is the provider's typical rate relative to mid-market (e.g. 0.994 =
-# ~0.6% below mid). `lastVerified` records when it was last checked and is shown
-# on every card.
+# Each provider's shown rate = LIVE mid-market rate x markup, and the recipient
+# gets (amount - fixed fee) x rate. The live mid-market rate updates daily
+# (open.er-api.com), so displayed rates update on their own; markups are
+# re-checked by hand and `lastVerified` is shown on every card.
 #
-# FEES ARE NOT MODELLED: UAE exchange houses bundle their margin into the rate
-# and don't publish a simple fee, and digital apps' fees vary by amount and
-# corridor. So the app compares on EXCHANGE RATE and tells users to confirm the
-# fee with the provider. Every card is labelled "Estimated".
-#
-# All six providers below were confirmed to offer AED-out (sending money FROM
-# the UAE) as of Sep 2026. WorldRemit and Instarem were removed after they
-# stopped offering AED-out transfers. `markup` = the provider's typical rate
-# relative to mid-market:
-#   - Wise, Remitly (digital apps): support AED send; near-mid rates.
-#   - Al Ansari, GCC Exchange, Al Fardan, LuLu (CBUAE-licensed UAE exchange
-#     houses): their margin is bundled into the rate. Markups are estimates in
-#     the observed UAE exchange-house band (~0.4-0.8% below mid; houses cluster
-#     within ~1% of each other, per remit.ae). GCC's rate was cross-checked
-#     against remit.ae (near-mid).
-# Re-check occasionally and bump `lastVerified`.
+# Markups were calibrated on 2026-09-30 from real quotes for 1,000 AED -> INR,
+# divided by the real-time mid-market rate at the time (26.1219, Wise live
+# rate). The comparison is FEES INCLUDED, so `feeType` says how each fee is
+# handled:
+#   - "included": UAE exchange houses quote an all-in amount, so the fee is
+#     already inside the markup.
+#   - "fixed":    a flat fee in AED (`fee`) deducted from the amount sent;
+#     `markup` is the pure exchange rate.
+#   - "varies":   the fee depends on amount and destination. `markup` is the
+#     effective all-in rate observed at 1,000 AED, so it is less exact at other
+#     amounts and the card warns the user.
+# Observed quotes (1,000 AED -> INR): Remitly 26,200 + 5 AED fee; LuLu 26,110;
+# Al Ansari 25,974; Al Fardan 25,950; Wise 25,913; GCC 25,905.
+# Remitly's rate is ~0.3% ABOVE mid-market — as quoted on the day; re-check it
+# is not a time-limited or first-transfer offer.
 PROVIDERS = [
-    {"provider": "Wise",              "markup": 0.996, "url": "https://wise.com",                "lastVerified": "2026-09-30"},
-    {"provider": "GCC Exchange",      "markup": 0.996, "url": "https://www.gccexchange.com",     "lastVerified": "2026-09-30"},
-    {"provider": "Al Ansari",         "markup": 0.995, "url": "https://alansariexchange.com",    "lastVerified": "2026-09-30"},
-    {"provider": "Remitly",           "markup": 0.994, "url": "https://www.remitly.com",         "lastVerified": "2026-09-30"},
-    {"provider": "Al Fardan Exchange","markup": 0.993, "url": "https://www.alfardanexchange.com","lastVerified": "2026-09-30"},
-    {"provider": "LuLu Exchange",     "markup": 0.992, "url": "https://www.luluexchange.com",    "lastVerified": "2026-09-30"},
+    {"provider": "Remitly",            "markup": 1.0030, "feeType": "fixed",    "fee": 5, "url": "https://www.remitly.com",          "lastVerified": "2026-09-30"},
+    {"provider": "LuLu Exchange",      "markup": 0.9995, "feeType": "included", "fee": 0, "url": "https://www.luluexchange.com",     "lastVerified": "2026-09-30"},
+    {"provider": "Al Ansari",          "markup": 0.9943, "feeType": "included", "fee": 0, "url": "https://alansariexchange.com",     "lastVerified": "2026-09-30"},
+    {"provider": "Al Fardan Exchange", "markup": 0.9934, "feeType": "included", "fee": 0, "url": "https://www.alfardanexchange.com", "lastVerified": "2026-09-30"},
+    {"provider": "Wise",               "markup": 0.9920, "feeType": "varies",   "fee": 0, "url": "https://wise.com",                 "lastVerified": "2026-09-30"},
+    {"provider": "GCC Exchange",       "markup": 0.9917, "feeType": "included", "fee": 0, "url": "https://www.gccexchange.com",      "lastVerified": "2026-09-30"},
 ]
 
 
@@ -171,20 +168,20 @@ def get_quote(req: QuoteRequest):
                  or _last_live_rates.get((req.fromCurrency, req.toCurrency))
                  or _fallback_rate(req.fromCurrency, req.toCurrency))
 
-    # 3) Build each provider quote from the live rate x its markup. Fees are not
-    #    modelled — we compare on exchange rate and tell users to confirm the fee
-    #    with the provider (see feeKnown: False below).
+    # 3) Build each provider quote from the live rate x its markup, after
+    #    deducting any fixed fee (see feeType in PROVIDERS).
     quotes = []
     for p in PROVIDERS:
         rate = round(base_rate * p["markup"], 4)
-        receive = round(req.amount * rate, 2)
+        receive = round(max(req.amount - p["fee"], 0) * rate, 2)
         quotes.append({
             "provider": p["provider"],
             "rate": rate,
             "receiveAmount": receive,
+            "fee": p["fee"],
+            "feeType": p["feeType"],
             "url": p["url"],
             "lastVerified": p["lastVerified"],
-            "feeKnown": False,   # fee is not modelled — user should check provider
             "estimated": True,
         })
 

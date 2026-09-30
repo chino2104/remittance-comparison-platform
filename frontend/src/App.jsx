@@ -46,6 +46,7 @@ const getColors = (mode) => {
     accentHover: '#4338ca',
     accentBg: '#e0e7ff',
     success: '#10b981',
+    warning: '#b45309',
     chipBg: '#f1f5f9',
     chipText: '#475569',
     dashedBorder: '#cbd5e1',
@@ -69,6 +70,7 @@ const getColors = (mode) => {
     accentHover: '#6366f1',
     accentBg: '#312e81',
     success: '#34d399',
+    warning: '#fbbf24',
     chipBg: '#1f2937',
     chipText: '#cbd5e1',
     dashedBorder: '#334155',
@@ -464,7 +466,7 @@ function App() {
                                 <Typography variant="body2" sx={{ fontWeight: 700, color: c.textPrimary }}>{quote.rate}</Typography>
                               </Box>
                               <Typography variant="caption" sx={{ color: c.textSecondary, display: 'block' }}>
-                                {t.fee}: {quote.feeKnown ? `${quote.fee} ${results.sendCurrency || 'AED'}` : t.checkProvider}
+                                {t.fee}: {quote.feeType === 'fixed' ? `${quote.fee} ${results.sendCurrency || 'AED'}` : quote.feeType === 'included' ? t.feeIncluded : quote.feeType === 'varies' ? t.feeVaries : t.checkProvider}
                               </Typography>
                             </Box>
                           </Box>
@@ -482,6 +484,12 @@ function App() {
                                 {results.currency}
                               </Typography>
                             </Box>
+
+                            {quote.feeType === 'varies' && (
+                              <Typography variant="caption" sx={{ display: 'block', mt: 1, color: c.warning, fontSize: '0.68rem' }}>
+                                ⚠ {t.feeVariesWarning}
+                              </Typography>
+                            )}
 
                             {/* Honesty label: these are estimates, with the date the
                                 provider's markup/fee was last checked. */}
