@@ -1,31 +1,18 @@
 import { useState, useEffect, useMemo } from 'react';
 import {
   Container, Typography, TextField, Button, Card, CardContent,
-  CircularProgress, MenuItem, Select, FormControl, Box, Chip,
+  CircularProgress, MenuItem, Select, FormControl, Box, Chip, useMediaQuery,
   AppBar, Toolbar, IconButton, Alert,
   ThemeProvider, createTheme, CssBaseline
 } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { translations, LANGUAGES } from './translations';
+import { fmt, fmtDate, feeLabel } from './format';
+import MobileView from './MobileView';
 
 // Backend base URL comes from the environment (see .env / .env.example) so the
 // same build works in dev and production. Falls back to local dev.
 const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
-
-// Replace {token} placeholders in a translation string, e.g. fmt("in {h}h", {h: 24}).
-const fmt = (str, vars = {}) =>
-  str.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : `{${k}}`));
-
-// Format an ISO date (YYYY-MM-DD) for display in the active language.
-const fmtDate = (iso, lang) => {
-  try {
-    return new Date(`${iso}T00:00:00`).toLocaleDateString(lang, {
-      year: 'numeric', month: 'short', day: 'numeric',
-    });
-  } catch {
-    return iso;
-  }
-};
 
 // Colour tokens for each mode. Every custom colour used in the UI lives here so the
 // whole app re-themes by flipping `mode`.
@@ -157,6 +144,25 @@ function App() {
   };
 
   const amountInvalid = !(Number(amount) > 0);
+
+  // Phones get their own layout (MobileView); everything else uses the layout
+  // below. Both render the same backend results, so the numbers are identical.
+  const isMobile = useMediaQuery('(max-width:599.95px)');
+
+  if (isMobile) {
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <MobileView
+          t={t} c={c} lang={lang} setLang={setLang} mode={mode} toggleMode={toggleMode}
+          amount={amount} setAmount={setAmount}
+          targetCurrency={targetCurrency} setTargetCurrency={setTargetCurrency}
+          results={results} loading={loading} error={error}
+          amountInvalid={amountInvalid} onCompare={handleCompare}
+        />
+      </ThemeProvider>
+    );
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -466,7 +472,7 @@ function App() {
                                 <Typography variant="body2" sx={{ fontWeight: 700, color: c.textPrimary }}>{quote.rate}</Typography>
                               </Box>
                               <Typography variant="caption" sx={{ color: c.textSecondary, display: 'block' }}>
-                                {t.fee}: {quote.feeType === 'fixed' ? `${quote.fee} ${results.sendCurrency || 'AED'}` : quote.feeType === 'included' ? t.feeIncluded : quote.feeType === 'varies' ? t.feeVaries : t.checkProvider}
+                                {t.fee}: {feeLabel(quote, t, results.sendCurrency)}
                               </Typography>
                             </Box>
                           </Box>
